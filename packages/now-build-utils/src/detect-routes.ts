@@ -286,9 +286,14 @@ export async function detectRoutes(
   builders: Builder[]
 ): Promise<RoutesResult> {
   const routesResult = await detectApiRoutes(files, builders);
+  const { defaultRoutes } = routesResult;
 
-  if (routesResult.defaultRoutes && hasPublicBuilder(builders)) {
-    routesResult.defaultRoutes.push({
+  if (defaultRoutes && defaultRoutes.length > 0) {
+    defaultRoutes.unshift({ handle: 'miss' });
+  }
+
+  if (defaultRoutes && hasPublicBuilder(builders)) {
+    defaultRoutes.push({
       src: '/(.*)',
       dest: '/public/$1',
     });
